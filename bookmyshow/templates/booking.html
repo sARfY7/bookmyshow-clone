@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Book Movie</h1>
+  <div class="row">
+      <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex d-md-block justify-content-center">
+            <img class="img-fluid" src="{{url_for('static', filename='img/posters' + movie['poster_path'])}}" alt="{{movie['title']}}">
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="row">
+          <div class="col-12">
+            <h3>{{ movie["title"] }}</h3>
+          </div>
+          <div class="col-12">
+            {{ movie["overview"] }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <hr>
+  <h1 class="text-center">Movie Screening Timings</h1>
+  <hr>
+  <div class="row">
+    {% for theatre_id, theatre_name, theatre_location, screen_time in theatres %}
+      <div class="col-12 py-3 theatre-screen">
+        <a href="{{ url_for('main.select_seat', movie_id=movie['id'], theatre_id=theatre_id) }}">
+          <div class="row">
+            <div class="col-9 font-weight-bold">{{ theatre_name }}, <span class="font-weight-normal">{{ theatre_location }}</span></div>
+            <div class="col-3">{{ screen_time }}</div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

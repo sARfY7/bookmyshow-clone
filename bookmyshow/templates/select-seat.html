@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Book Movie</h1>
+  <div class="row">
+      <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex d-md-block justify-content-center">
+            <img class="img-fluid" src="{{url_for('static', filename='img/posters' + movie['poster_path'])}}" alt="{{movie['title']}}">
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="row">
+          <div class="col-12">
+            <h3>{{ movie["title"] }}</h3>
+          </div>
+          <div class="col-12">
+            {{ movie["overview"] }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <hr>
+  <h1 class="text-center">Select Seat</h1>
+  <hr>
+  <div class="row">
+    <div class="col-12 d-flex flex-column align-items-center justify-content-center">
+      {% for row in range(theatre['rows']) %}
+        <div class="row mb-3">
+          <div class="col-1 d-flex align-items-center">{{ row + 1 }}</div>
+          <div class="col-11">
+            {% for column in range(theatre['columns']) %}
+              {% if {'row': row + 1, 'column': column + 1} not in unavailable_seats %}
+                <div class="btn btn-outline-dark seat" data-row="{{row + 1}}" data-column="{{column + 1}}">{{ column + 1 }}</div>
+              {% else %}
+                <div class="btn btn-outline-dark disabled" data-row="{{row + 1}}" data-column="{{column + 1}}">{{ column + 1 }}</div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row py-3">
+    <div class="col-12 text-center">
+      <form action="{{ url_for('main.summary', movie_id=movie['id'], theatre_id=theatre['id']) }}" method="POST" id="seat-form">
+        <input type="hidden" id="seats-data" name="seats">
+        <button class="btn btn-outline-primary book-now__btn">Book Now</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

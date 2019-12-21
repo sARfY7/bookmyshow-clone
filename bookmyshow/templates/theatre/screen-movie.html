@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Screen Movie</h1>
+  <div class="row">
+      <div class="col-3">
+          {% if movie['poster_path'] != None %}
+            <img class="img-fluid" src="{{poster_base_url + poster_size}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
+          {% else %}
+            <img class="img-fluid" src="{{url_for('static', filename='img/posters/placeholder.png')}}" alt="{{movie['title']}}">
+          {% endif %}
+      </div>
+      <div class="col-9">
+        <div class="row">
+          <div class="col-12 mb-1">
+            {% for genre in movie['genres'] %}
+              <span class="badge badge-pill badge-light"> {{ genre['name'] }} </span>
+            {% endfor %}
+          </div>
+          <div class="col-12">
+            <h3>{{ movie["title"] }}</h3>
+          </div>
+          <div class="col-12">
+            {{ movie["overview"] }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <h1 class="text-center">Select Screening Time</h1>
+    </div>
+    <div class="col-12">
+      <form action="" method="POST">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-4">
+              {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                  {% for category, message in messages %}
+                    <div class="mt-2 alert alert-{{ category }}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              {% endwith %}
+              {{ form.hidden_tag() }}
+              <div class="form-group">
+                {{ form.screening_time.label(class="form-control-plaintext") }}
+                {% if form.screening_time.errors %}
+                  {{ form.screening_time(class="form-control is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.screening_time.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  {{ form.screening_time(class="form-control") }}
+                {% endif %}
+              </div>
+              <div class="form-group text-center">
+                {{ form.submit(class="btn btn-outline-primary") }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

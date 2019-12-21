@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Now Playing Movies</h1>
+  <div class="row">
+    {% for movie in movies %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+        <div class="movie">
+            <div class="movie__poster">
+              {% if movie['poster_path'] != None %}
+                <img class="img-sm-fluid w-100 w-sm-0" src="{{poster_base_url + poster_size}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
+              {% else %}
+                <img class="img-sm-fluid" src="{{url_for('static', filename='img/posters/placeholder.png')}}" alt="{{movie['title']}}">
+              {% endif %}
+            </div>
+            <div class="movie__overlay p-3 d-flex flex-column align-items-center justify-content-end">
+              <div class="movie__name mb-2 text-center">
+                {{ movie['title'] }}
+              </div>
+              <div class="movie__btn">
+                <a href="{{ url_for('theatre.screen_movie', movie_id=movie['id']) }}" class="btn btn-outline-light btn-sm">Screen Movie</a>
+              </div>
+            </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <ul class="pagination pagination-lg justify-content-center">
+    {% if total_pages > 10 %}
+      {% for i in range(10) %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('theatre.now_playing', page=i+1) }}">{{ i + 1 }}</a></li>
+      {% endfor %}
+    {% else %}
+      {% for i in range(total_pages) %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('theatre.now_playing', page=i+1) }}">{{ i + 1 }}</a></li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Book Movie</h1>
+  <div class="row">
+      <div class="col-12 col-md-4 mb-3 mb-md-0 d-flex d-md-block justify-content-center">
+            <img class="img-fluid" src="{{url_for('static', filename='img/posters' + movie['poster_path'])}}" alt="{{movie['title']}}">
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="row">
+          <div class="col-12">
+            <h3>{{ movie["title"] }}</h3>
+          </div>
+          <div class="col-12">
+            {{ movie["overview"] }}
+          </div>
+        </div>
+      </div>
+  </div>
+  <hr>
+  <h1 class="text-center">Booking Confirmation</h1>
+  <hr>
+  <div class="row mb-5">
+    <div class="col-12 mb-3">
+      <div class="row">
+        <div class="col-4">Booking ID: </div>
+        <div class="col-8">{{ booking.id }}</div>
+      </div>
+    </div>
+    <div class="col-12 mb-3">
+      <div class="row">
+        <div class="col-4">Booked Seats: </div>
+        <div class="col-8">
+          {% for seat in seats %}
+            <span class="btn btn-sm btn-outline-dark">R{{ seat["row"] }}-C{{ seat["column"] }} </span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="row">
+        <div class="col-4">Booking Amount: </div>
+        <div class="col-8">&#8377; {{ booking.booking_amount }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

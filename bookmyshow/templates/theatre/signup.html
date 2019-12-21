@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block main %}
+<form action="" method="POST">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mt-2 alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <h2 class="text-center">{{ user_type }} Signup</h2>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.name.label(class="form-control-plaintext") }}
+          {% if form.name.errors %}
+            {{ form.name(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.name.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.name(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.location.label(class="form-control-plaintext") }}
+          {% if form.location.errors %}
+            {{ form.location(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.location.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.location(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.rows.label(class="form-control-plaintext") }}
+          {% if form.rows.errors %}
+            {{ form.rows(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.rows.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.rows(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.columns.label(class="form-control-plaintext") }}
+          {% if form.columns.errors %}
+            {{ form.columns(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.columns.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.columns(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.seat_price.label(class="form-control-plaintext") }}
+          {% if form.seat_price.errors %}
+            {{ form.seat_price(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.seat_price.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.seat_price(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.email.label(class="form-control-plaintext") }}
+          {% if form.email.errors %}
+            {{ form.email(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.email(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.password.label(class="form-control-plaintext") }}
+          {% if form.password.errors %}
+            {{ form.password(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.password(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-primary") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

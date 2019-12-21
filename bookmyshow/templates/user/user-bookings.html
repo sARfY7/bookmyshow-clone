@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <h1 class="text-center mb-4">Your Bookings</h1>
+  <div class="row">
+      {% for booking in bookings %}
+        <div class="col-12 mb-3">
+          <div class="row justify-content-center">
+            <div class="col-12 col-sm-5 col-md-3 d-flex d-md-block justify-content-center mb-3 mb-md-0">
+              <img class="img-fluid" src="{{url_for('static', filename='img/posters' + booking.movie.poster_path)}}" alt="">
+            </div>
+            <div class="col-12 col-sm-7 col-md-9">
+              <div class="row mb-2">
+                <div class="col-4">Booking ID: </div>
+                <div class="col-8">{{ booking['id'] }}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">Movie Name: </div>
+                <div class="col-8">{{ booking['movie']['title'] }}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">Booked Seats: </div>
+                <div class="col-8">
+                  {% for seat in booking.seats %}
+                    <span class="btn btn-sm btn-outline-dark">R{{ seat['row'] }}-C{{ seat['number'] }}</span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">Booking Amount: </div>
+                <div class="col-8">&#8377; {{ booking['booking_amount'] }}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">Theatre: </div>
+                <div class="col-8">{{ booking['theatre']['name'] }}</div>
+              </div>
+              <div class="row mb-2">
+                <div class="col-4">Theatre Location: </div>
+                <div class="col-8">{{ booking['theatre']['location'] }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+  </div>
+</div>
+{% endblock %}

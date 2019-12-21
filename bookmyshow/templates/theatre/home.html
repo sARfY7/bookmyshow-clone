@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="d-flex justify-content-center align-items-center">
+  <div class="container">
+    <div class="row py-5 justify-content-center menu">
+      <div class="col-12 mb-4"><h1 class="text-center">Menu</h1></div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="col-12">
+            {% for category, message in messages %}
+              <div class="mt-2 alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <div class="col-12 mb-5 mb-sm-0 col-sm-6">
+        <a href="{{ url_for('theatre.movies') }}">
+          <div class="py-5 mr-4 d-flex justify-content-center align-items-center menu__item">
+            <h4 class="text-center">Screened Movies</h4 class="text-center">
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-sm-6">
+        <a href="{{ url_for('theatre.now_playing', page=1) }}">
+          <div class="py-5 mr-4 d-flex justify-content-center align-items-center menu__item">
+            <h4 class="text-center">Now Playing Movies</h4>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "layout.html" %}
+{% block main %}
+<form action="" method="POST">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="mt-2 alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        <h2 class="text-center">Post Movie</h2>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.name.label(class="form-control-plaintext") }}
+          {% if form.name.errors %}
+            {{ form.name(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.name.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.name(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.description.label(class="form-control-plaintext") }}
+          {% if form.description.errors %}
+            {{ form.description(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.description.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.description(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.poster.label(class="form-control-plaintext") }}
+          {% if form.poster.errors %}
+            {{ form.poster(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.poster.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.poster(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.runtime.label(class="form-control-plaintext") }}
+          {% if form.runtime.errors %}
+            {{ form.runtime(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.runtime.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.runtime(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.cast.label(class="form-control-plaintext") }}
+          {% if form.cast.errors %}
+            {{ form.cast(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.cast.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.cast(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.directors.label(class="form-control-plaintext") }}
+          {% if form.directors.errors %}
+            {{ form.directors(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.directors.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.directors(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.release_date.label(class="form-control-plaintext") }}
+          {% if form.release_date.errors %}
+            {{ form.release_date(class="form-control is-invalid") }}
+            <div class="invalid-feedback">
+              {% for error in form.release_date.errors %}
+                <span>{{ error }}</span>
+              {% endfor %}
+            </div>
+          {% else %}
+            {{ form.release_date(class="form-control") }}
+          {% endif %}
+        </div>
+        <div class="form-group">
+          {{ form.submit(class="btn btn-outline-primary") }}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

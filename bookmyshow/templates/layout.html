@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {% if title %}
+    <title>{{ title }} - BookMyShow Clone</title>
+    {% else %}
+    <title>BookMyShow Clone</title>
+    {% endif %}
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/bootstrap.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/main.css')}}"
+    />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{{ url_for('main.home') }}">BookMyShow</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            {% if 'user_id' not in session %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.login') }}"
+                  >Login as User</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('theatre.login') }}"
+                  >Login as Theatre Admin</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('user.signup') }}"
+                  >Signup as User</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('theatre.signup') }}"
+                  >Signup as Theatre Admin</a>
+              </li>
+            {% else %}
+              {% if session['logged_in_as'] == 'theatre' %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('theatre.home') }}"
+                    >Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('theatre.movies') }}"
+                    >Screened Movies</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('theatre.now_playing') }}"
+                    >Now Playing</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('theatre.logout') }}">Logout</a>
+                </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('main.home') }}"
+                    >Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('user.bookings') }}">Bookings</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('user.logout') }}">Logout</a>
+                </li>
+              {% endif %}
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+    </header>
+    {% block main %}{% endblock %}
+    <script src="{{url_for('static', filename='js/jquery.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/main.js')}}"></script>
+  </body>
+</html>
