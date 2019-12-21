@@ -21,5 +21,10 @@
       </div>
     {% endfor %}
   </div>
+  <ul class="pagination pagination-lg justify-content-center">
+    {% for i in range(total_pages) %}
+      <li class="page-item"><a class="page-link" href="{{ url_for('main.home', page=i+1) }}">{{ i + 1 }}</a></li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}

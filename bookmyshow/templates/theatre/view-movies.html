@@ -14,7 +14,7 @@
                 {{ movie['title'] }}
               </div>
               <div class="movie__btn mb-2">
-                <a href="{{ url_for('theatre.screen_movie', movie_id=movie['id']) }}" class="btn btn-outline-light btn-sm">Delete Screening</a>
+                <a href="{{ url_for('theatre.delete_movie', movie_id=movie['id']) }}" class="btn btn-outline-light btn-sm">Delete Screening</a>
               </div>
               <!-- <div class="movie__btn">
                 <a href="{{ url_for('theatre.screen_movie', movie_id=movie['id']) }}" class="btn btn-outline-light btn-sm">Update Screening</a>
@@ -24,5 +24,10 @@
       </div>
     {% endfor %}
   </div>
+  <ul class="pagination pagination-lg justify-content-center">
+    {% for i in range(total_pages) %}
+      <li class="page-item"><a class="page-link" href="{{ url_for('theatre.movies', page=i+1) }}">{{ i + 1 }}</a></li>
+    {% endfor %}
+  </ul>
 </div>
 {% endblock %}
