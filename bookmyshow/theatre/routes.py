@@ -42,11 +42,23 @@ def now_playing():
 @theatre.route("/theatre/movies")
 @theatre_login_required
 def movies():
-  movie_screenings = MovieScreening.query.filter_by(theatre_id = session['user_id']).all()
+  page = request.args.get('page')
+  offset = None
+  if not page:
+    page = 1
+    offset = 0
+  else:
+    page = int(page)
+    offset = (page - 1) * 12
+  total_movie_screenings = MovieScreening.query.filter_by(
+      theatre_id=session['user_id']).count()
+  total_movie_screenings = (total_movie_screenings // 12) + \
+      1 if total_movie_screenings % 12 != 0 else (total_movie_screenings // 12)
+  movie_screenings = MovieScreening.query.filter_by(theatre_id = session['user_id']).limit(12).offset(offset)
   movies = []
   for movie_screening in movie_screenings:
     movies.append(movie_screening.movie)
-  return render_template("theatre/view-movies.html", movies=movies)
+  return render_template("theatre/view-movies.html", movies=movies, total_pages=total_movie_screenings)
 
 # Screen Movie
 @theatre.route("/theatre/movies/<int:movie_id>/screen", methods=["GET", "POST"])
@@ -66,10 +78,9 @@ def screen_movie(movie_id):
         open(os.path.abspath("bookmyshow/static/img/posters") +
             movie["poster_path"], "wb").write(poster.content)
         new_movie = Movie(title=movie['title'], overview=movie['overview'], poster_path=movie['poster_path'], runtime=movie['runtime'], release_date=movie['release_date'])
+        new_movie_screening = MovieScreening(screening_time=movie_screening_form.screening_time.data, theatre_id=session['user_id'])
+        new_movie.screenings = [new_movie_screening]
         db.session.add(new_movie)
-        db.session.commit()
-        new_movie_screening = MovieScreening(screening_time=movie_screening_form.screening_time.data, movie_id=new_movie.id, theatre_id=session['user_id'])
-        db.session.add(new_movie_screening)
         db.session.commit()
         flash(f"Movie Screening added", "success")
       else:
@@ -96,8 +107,11 @@ def update_movie_screening():
   pass
 
 # Delete a movie
-@theatre.route("/theatre/movies/<int:movie_id>/delete", methods=["POST"])
-def delete_movie_screening(movie_id):
+@theatre.route("/theatre/movies/<int:movie_id>/delete", methods=["GET"])
+def delete_movie(movie_id):
+  movie = Movie.query.get(movie_id)
+  db.session.delete(movie)
+  db.session.commit()
   return redirect(url_for('theatre.movies'))
 
 @theatre.route("/theatre/login", methods=["GET", "POST"])
