@@ -2,11 +2,12 @@ from flask import Blueprint, render_template, url_for, flash, redirect, session,
 from .forms import LoginForm, SignupForm, MovieScreeningForm
 from bookmyshow import db, bcrypt, theatre_login_required
 from bookmyshow.models import Theatre, Movie, MovieScreening
+from bookmyshow.config import Config
 import requests, json, os
 
 theatre = Blueprint("theatre", __name__)
 
-config_url = "https://api.themoviedb.org/3/configuration?api_key=7e2527157403475bc563990b80915c14"
+config_url = f"https://api.themoviedb.org/3/configuration?api_key={Config.TMDB_API_KEY}"
 api_config = requests.get(config_url)
 config = None
 poster_base_url  = None
@@ -29,7 +30,7 @@ def now_playing():
   page = request.args.get('page')
   if not page:
     page = str(1)
-  url = "https://api.themoviedb.org/3/movie/now_playing?api_key=7e2527157403475bc563990b80915c14&language=en-US&page=" + page
+  url = f"https://api.themoviedb.org/3/movie/now_playing?api_key={Config.TMDB_API_KEY}&language=en-US&page=" + page
   now_playing_movies_request = requests.get(url)
   if ((now_playing_movies_request.status_code == 200) and (api_config.status_code == 200)):
     now_playing_movies = now_playing_movies_request.json()["results"]
@@ -47,23 +48,11 @@ def movies():
     movies.append(movie_screening.movie)
   return render_template("theatre/view-movies.html", movies=movies)
 
-# Post new movie
-# @theatre.route("/theatre/movies/new", methods=["GET", "POST"])
-# def post_movie():
-#   movie_form = MovieForm()
-#   if movie_form.validate_on_submit():
-#     new_movie = Movie(name=movie_form.name.data, description=movie_form.description.data, poster=movie_form.poster.data, runtime=movie_form.runtime.data, cast=movie_form.cast.data, directors=movie_form.directors.data, release_date=movie_form.release_date.data)
-#     db.session.add(new_movie)
-#     db.session.commit()
-#     flash(f"Movie {movie_form.name.data} added successfully", "success")
-#     return redirect(url_for("theatre.home"))
-#   return render_template("theatre/post-movie.html", title="Post Movie", form=movie_form)
-
 # Screen Movie
 @theatre.route("/theatre/movies/<int:movie_id>/screen", methods=["GET", "POST"])
 @theatre_login_required
 def screen_movie(movie_id):
-  url = "https://api.themoviedb.org/3/movie/" + str(movie_id) + "?api_key=7e2527157403475bc563990b80915c14&language=en-US"
+  url = f"https://api.themoviedb.org/3/movie/{str(movie_id)}?api_key={Config.TMDB_API_KEY}&language=en-US"
   movie_request = requests.get(url)
   movie_screening_form = MovieScreeningForm()
   if (movie_request.status_code == 200):
@@ -100,22 +89,16 @@ def screen_movie(movie_id):
           flash(f"Movie Screening already exists", "danger")
     return render_template("theatre/screen-movie.html", poster_base_url=poster_base_url, poster_size=poster_size, movie=movie, form=movie_screening_form)
   return "Error Fetching Movie Details"
-    
 
-# Get a movie
-@theatre.route("/theatre/movies/<int:movie_id>")
-def get_movie():
-  pass
-
-# Update a movie
+# Update a movie screening time
 @theatre.route("/theatre/movies/<int:movie_id>/update")
-def update_movie():
+def update_movie_screening():
   pass
 
 # Delete a movie
-@theatre.route("/theatre/movies/<int:movie_id>/delete")
-def delete_movie():
-  pass
+@theatre.route("/theatre/movies/<int:movie_id>/delete", methods=["POST"])
+def delete_movie_screening(movie_id):
+  return redirect(url_for('theatre.movies'))
 
 @theatre.route("/theatre/login", methods=["GET", "POST"])
 def login():
