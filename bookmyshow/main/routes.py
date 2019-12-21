@@ -1,13 +1,24 @@
 from flask import Blueprint, render_template, url_for, request, json, session, redirect
 from bookmyshow.models import MovieScreening, Movie, Theatre, Booking, Seat
 from bookmyshow import db, user_login_required
+import requests
 
 main = Blueprint("main", __name__)
 
 @main.route("/")
 def home():
-    movies = Movie.query.all()
-    return render_template("home.html", movies=movies)
+    page = request.args.get('page')
+    offset = None
+    if not page:
+      page = 1
+      offset = 0
+    else:
+      page = int(page)
+      offset = (page - 1) * 12
+    total_movies = Movie.query.count()
+    total_movies = (total_movies // 12) + 1 if total_movies % 12 != 0 else total_movies // 12
+    movies = Movie.query.offset(offset).limit(12)
+    return render_template("home.html", movies=movies, total_pages=total_movies)
 
 @main.route("/movie/<int:movie_id>/book")
 def book_movie(movie_id):
