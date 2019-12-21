@@ -26,19 +26,12 @@ class Movie(Model):
     poster_path = Column(Text, nullable=False, default="placeholder.png")
     runtime = Column(Integer)
     release_date = Column(Date)
-    bookings = relationship('Booking', backref='movie', lazy=True)
-    screenings = relationship('MovieScreening', backref='movie', lazy=True)
+    bookings = relationship('Booking', cascade="all, delete-orphan", backref='movie', lazy=True)
+    screenings = relationship('MovieScreening', cascade="save-update, delete", backref='movie', lazy=True)
 
 class MovieScreening(Model):
     id = Column(Integer, primary_key=True)
     screening_time = Column(Time, nullable=False)
-    movie_id = Column(Integer, ForeignKey('movie.id'), nullable=False)
-    theatre_id = Column(Integer, ForeignKey('theatre.id'), nullable=False)
-
-class Screening(Model):
-    id = Column(Integer, primary_key=True)
-    date = Column(Date, nullable=False)
-    time = Column(Time, nullable=False)
     movie_id = Column(Integer, ForeignKey('movie.id'), nullable=False)
     theatre_id = Column(Integer, ForeignKey('theatre.id'), nullable=False)
 
@@ -78,4 +71,4 @@ class Seat(Model):
     id = Column(Integer, primary_key=True)
     row = Column(Integer)
     number = Column(Integer)
-    booking_id = Column(Integer, ForeignKey('booking.id'), nullable=False)
+    booking_id = Column(Integer, ForeignKey('booking.id'))
