@@ -3,6 +3,7 @@ from bookmyshow.models import MovieScreening, Movie, Theatre, Booking, Seat
 from bookmyshow import db
 import requests
 from bookmyshow.auth import user_login_required
+from .services import get_in_theatre_movies, get_movie_screenings, get_unavailable_seats, get_booking_summary, get_booking_confirmation
 
 main = Blueprint("main", __name__)
 
@@ -16,57 +17,27 @@ def home():
     else:
       page = int(page)
       offset = (page - 1) * 12
-    total_movies = Movie.query.count()
-    total_movies = (total_movies // 12) + 1 if total_movies % 12 != 0 else total_movies // 12
-    movies = Movie.query.offset(offset).limit(12)
+    movies, total_movies = get_in_theatre_movies(offset)
     return render_template("home.html", movies=movies, total_pages=total_movies)
 
 @main.route("/movie/<int:movie_id>/book")
 def book_movie(movie_id):
-    movie = Movie.query.get(movie_id)
-    movie_screenings = movie.screenings
-    theatres = []
-    for movie_screening in movie_screenings:
-      theatres.append((movie_screening.theatre.id, movie_screening.theatre.name,
-                       movie_screening.theatre.location, movie_screening.screening_time))
-    return render_template("booking.html", movie=movie, theatres=theatres)
+    movie, screening_theates = get_movie_screenings(movie_id)
+    return render_template("booking.html", movie=movie, theatres=screening_theates)
 
 @main.route("/movie/<int:movie_id>/theatre/<int:theatre_id>/booking")
 def select_seat(movie_id, theatre_id):
-  movie = Movie.query.get(movie_id)
-  theatre = Theatre.query.get(theatre_id)
-  bookings = Booking.query.filter_by(movie_id=movie_id, theatre_id=theatre_id).all()
-  unavailable_seats = []
-  if (len(bookings) != 0):
-    for booking in bookings:
-      for seat in booking.seats:
-        unavailable_seats.append({"row": seat.row, "column": seat.number})
+  movie, theatre, unavailable_seats = get_unavailable_seats(movie_id, theatre_id)
   return render_template("select-seat.html", movie=movie, theatre=theatre, unavailable_seats=unavailable_seats)
 
-@main.route("/movie/<int:movie_id>/theatre/<int:theatre_id>/summary", methods=["GET", "POST"])
+@main.route("/movie/<int:movie_id>/theatre/<int:theatre_id>/summary", methods=["POST"])
 def summary(movie_id, theatre_id):
-  movie = Movie.query.get(movie_id)
-  theatre = Theatre.query.get(theatre_id)
-  if request.method == "POST":
-    selected_seats = json.loads(request.form["seats"])
-    total_amount = theatre.seat_price * len(selected_seats)
+  movie, theatre, selected_seats, total_amount = get_booking_summary(movie_id, theatre_id, request.form["seats"])
   return render_template("summary.html", movie=movie, theatre=theatre, seats=selected_seats, total_amount=total_amount)
 
 
 @main.route("/movie/<int:movie_id>/theatre/<int:theatre_id>/confirmation", methods=["POST"])
 @user_login_required
 def confirmation(movie_id, theatre_id):
-  movie = Movie.query.get(movie_id)
-  theatre = Theatre.query.get(theatre_id)
-  booked_seats = json.loads(request.form["seats"].replace("'", '"'))
-  total_amount = request.form["amount"]
-  new_booking = Booking(booking_amount=total_amount, movie_id=movie_id,
-                        theatre_id=theatre_id, user_id=session['user_id'])
-  db.session.add(new_booking)
-  db.session.commit()
-  for seat in booked_seats:
-    new_booked_seat = Seat(
-        row=seat['row'], number=seat['column'], booking_id=new_booking.id)
-    db.session.add(new_booked_seat)
-  db.session.commit()
+  movie, theatre, new_booking, booked_seats = get_booking_confirmation(movie_id, theatre_id, request.form["seats"].replace("'", '"'), request.form["amount"])
   return render_template("user/confirmation.html", movie=movie, theatre=theatre, booking=new_booking, seats=booked_seats)
