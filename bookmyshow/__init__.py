@@ -36,8 +36,10 @@ import bookmyshow.models as Models
 from bookmyshow.main.routes import main
 from bookmyshow.theatre.routes import theatre
 from bookmyshow.user.routes import user
+from bookmyshow.error.handlers import errors
 
 # Blueprint Registerations
 app.register_blueprint(main)
 app.register_blueprint(theatre)
 app.register_blueprint(user)
+app.register_blueprint(errors)
