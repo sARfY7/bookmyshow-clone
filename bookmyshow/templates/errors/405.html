@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="container">
+  <div class="row justify-content-center text-center">
+    <div class="col-12">
+      <h1 class="display-1">405</h1>
+    </div>
+    <div class="col-12">Method Not Allowed</div>
+    <div class="col-12">
+      <a href="{{url_for('main.home')}}">Go Back Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
