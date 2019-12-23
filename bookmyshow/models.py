@@ -64,7 +64,7 @@ class Booking(Model):
     movie_id = Column(Integer, ForeignKey('movie.id'), nullable=False)
     theatre_id = Column(Integer, ForeignKey('theatre.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    seats = relationship('Seat', backref='booking', lazy=True)
+    seats = relationship('Seat', cascade="save-update, delete", backref='booking', lazy=True)
 
 
 class Seat(Model):
