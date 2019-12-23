@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, url_for, request, json, session, redirect
 from bookmyshow.models import MovieScreening, Movie, Theatre, Booking, Seat
-from bookmyshow import db, user_login_required
+from bookmyshow import db
 import requests
+from bookmyshow.auth import user_login_required
 
 main = Blueprint("main", __name__)
 

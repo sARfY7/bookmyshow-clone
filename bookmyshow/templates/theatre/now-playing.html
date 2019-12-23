@@ -8,7 +8,7 @@
         <div class="movie">
             <div class="movie__poster">
               {% if movie['poster_path'] != None %}
-                <img class="img-sm-fluid w-100 w-sm-0" src="{{poster_base_url + poster_size}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
+                <img class="img-sm-fluid w-100 w-sm-0" src="{{poster_base_url}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
               {% else %}
                 <img class="img-sm-fluid w-100 w-sm-0" src="{{url_for('static', filename='img/posters/placeholder.png')}}" alt="{{movie['title']}}">
               {% endif %}

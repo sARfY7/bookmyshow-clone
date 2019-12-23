@@ -5,7 +5,7 @@
   <div class="row">
       <div class="col-3">
           {% if movie['poster_path'] != None %}
-            <img class="img-fluid" src="{{poster_base_url + poster_size}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
+            <img class="img-fluid" src="{{poster_base_url}}/{{movie['poster_path']}}" alt="{{movie['title']}}">
           {% else %}
             <img class="img-fluid" src="{{url_for('static', filename='img/posters/placeholder.png')}}" alt="{{movie['title']}}">
           {% endif %}

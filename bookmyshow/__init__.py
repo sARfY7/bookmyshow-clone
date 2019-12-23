@@ -1,36 +1,16 @@
 from bookmyshow.config import Config
-from flask import Flask, request, session, redirect, url_for, request
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from functools import wraps
 
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-bcrypt = Bcrypt(app)
-
-
-def theatre_login_required(func):
-  @wraps(func)
-  def wrapper(*args, **kwargs):
-    if ('user_id' in session):
-      return func(*args, **kwargs)
-    else:
-      return redirect(url_for('theatre.login'))
-  return wrapper
-
-
-def user_login_required(func):
-  @wraps(func)
-  def wrapper(*args, **kwargs):
-    if ('user_id' in session):
-      return func(*args, **kwargs)
-    else:
-      return redirect(url_for('user.login'))
-  return wrapper
+# Initialize App and App Extensions
+app = Flask(__name__) # Creating a new Flask App Instance
+app.config.from_object(Config) # Add configuration to Flask App Instance
+db = SQLAlchemy(app) # Creating a new Flask-SQLAlchemy instance by passing in Flask App Instance
+bcrypt = Bcrypt(app) # Creating a new Flask-Bcrypt instance by passing in Flask App Instance
 
 # Models Import
-import bookmyshow.models as Models
+import bookmyshow.models
 
 # Route Imports
 from bookmyshow.main.routes import main
