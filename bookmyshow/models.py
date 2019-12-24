@@ -23,7 +23,7 @@ class Movie(Model):
     id = Column(Integer, primary_key=True)
     title = Column(Text, nullable=False)
     overview = Column(Text)
-    poster_path = Column(Text, nullable=False, default="placeholder.png")
+    poster_path = Column(Text, nullable=False, default="/placeholder.png")
     runtime = Column(Integer)
     release_date = Column(Date)
     bookings = relationship('Booking', cascade="all, delete-orphan", backref='movie', lazy=True)
