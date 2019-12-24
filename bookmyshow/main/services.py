@@ -1,6 +1,6 @@
 from bookmyshow.models import Movie, Booking, Theatre, Seat
 from flask import json, session
-from bookmyshow import db
+from bookmyshow import db, es
 
 def get_in_theatre_movies(offset):
   total_movies = Movie.query.count()
@@ -50,3 +50,12 @@ def get_booking_confirmation(movie_id, theatre_id, seats, amount):
   db.session.add(new_booking)
   db.session.commit()
   return (movie, theatre, new_booking, new_booking.seats)
+
+def get_search_query_result(query):
+  qdsl = json.dumps({"query": {"match": {"title": query}}})
+  result = es.search(index="movies", body=qdsl)
+  searched_movies = []
+  if len(result["hits"]["hits"]) != 0:
+    for hit in result["hits"]["hits"]:
+      searched_movies.append(hit["_source"])
+  return searched_movies
