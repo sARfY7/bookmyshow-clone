@@ -1,6 +1,6 @@
 import requests, os
-from flask import session
-from bookmyshow import db
+from flask import session, json
+from bookmyshow import db, es
 from bookmyshow.config import Config
 from bookmyshow.models import MovieScreening, Movie
 
@@ -59,6 +59,11 @@ def save_movie_poster(poster_path):
   open(os.path.abspath("bookmyshow/static/img/posters") +
        poster_path, "wb").write(poster.content)
 
+def serialize_to_json(model):
+  cols = model.__class__.__mapper__.c.keys()
+  model_dict = dict((col, getattr(model, col)) for col in cols )
+  return json.dumps(model_dict)
+  
 
 def screen_new_movie(movie_data, screening_time):
   save_movie_poster(movie_data["poster_path"])
@@ -69,6 +74,8 @@ def screen_new_movie(movie_data, screening_time):
   new_movie.screenings = [new_movie_screening]
   db.session.add(new_movie)
   db.session.commit()
+  movie_json = serialize_to_json(new_movie)
+  es.index(index="movies", body=movie_json, id=new_movie.id)
 
 def is_movie_screened_by_current_theatre(existing_movie):
   existing_movie_screening = existing_movie.screenings
@@ -90,6 +97,7 @@ def delete_screened_movie(movie_id):
     movie_screening = MovieScreening.query.filter_by(movie_id=movie_id, theatre_id=session["user_id"]).first()
     db.session.delete(movie_screening)
     db.session.delete(movie)
+    es.delete(index="movies", id=movie_id)
   else:
     movie_screening = MovieScreening.query.filter_by(movie_id=movie_id, theatre_id=session["user_id"]).first()
     db.session.delete(movie_screening)
