@@ -1,0 +1,22 @@
+<div class="container-fluid">
+  <div class="row">
+  {% for movie in result %}
+    <a href="{{ url_for('main.book_movie', movie_id=movie['id']) }}">
+      <div class="col-12 autocomplete__result">
+        <div class="row">
+          <div class="col-4">
+            <img class="img-sm-fluid w-100 w-sm-0" src="{{url_for('static', filename='img/posters' + movie.poster_path)}}" alt="{{movie['title']}}">
+          </div>
+          <div class="col-8">
+            <div class="row">
+              <div class="col-12 autocomplete__result__movie__title">
+                {{ movie["title"] }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+  </div>
+</div>

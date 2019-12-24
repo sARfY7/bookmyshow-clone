@@ -51,3 +51,32 @@
   cursor: pointer;
   background-color: rgba(187, 187, 187, 0.432);
 }
+
+.autocomplete__form {
+  position: relative;
+}
+
+.autocomplete__results {
+  position: absolute;
+  z-index: 100;
+  top: 100%;
+  width: 100%;
+  max-height: 400px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 1px 2px 10px #00000026;
+}
+
+.autocomplete__results a {
+  color: #000000;
+}
+
+.autocomplete__result:not(:last-child) {
+  margin-bottom: 10px;
+}
+
+.autocomplete__result__movie__title {
+  font-size: 12px;
+}

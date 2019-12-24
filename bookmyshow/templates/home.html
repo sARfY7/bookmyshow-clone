@@ -7,7 +7,7 @@
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
         <div class="movie">
             <div class="movie__poster">
-                <img class="img-sm-fluid w-100 w-sm-0" src="{{url_for('static', filename='img/posters/' + movie.poster_path)}}" alt="{{movie['title']}}">
+                <img class="img-sm-fluid w-100 w-sm-0" src="{{url_for('static', filename='img/posters' + movie.poster_path)}}" alt="{{movie['title']}}">
             </div>
             <div class="movie__overlay p-3 d-flex flex-column align-items-center justify-content-end">
               <div class="movie__name text-center mb-2">
