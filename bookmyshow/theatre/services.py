@@ -52,6 +52,8 @@ def is_movie_screened(movie_title):
   return existing_movie
 
 def save_movie_poster(poster_path):
+  if (not poster_path):
+    return
   poster_url = f"{get_poster_base_url()}{poster_path}"
   poster = requests.get(poster_url)
   open(os.path.abspath("bookmyshow/static/img/posters") +
