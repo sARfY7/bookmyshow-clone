@@ -130,3 +130,6 @@ dmypy.json
 
 # vscode config
 .vscode
+
+#posters
+bookmyshow/static/img/posters
