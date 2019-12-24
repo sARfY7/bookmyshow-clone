@@ -59,6 +59,7 @@ def save_movie_poster(poster_path):
 
 
 def screen_new_movie(movie_data, screening_time):
+  save_movie_poster(movie_data["poster_path"])
   new_movie = Movie(title=movie_data['title'], overview=movie_data['overview'],
                     poster_path=movie_data['poster_path'], runtime=movie_data['runtime'], release_date=movie_data['release_date'])
   new_movie_screening = MovieScreening(
