@@ -3,6 +3,7 @@ from flask import session, json
 from bookmyshow import db, es
 from bookmyshow.config import Config
 from bookmyshow.models import MovieScreening, Movie
+from bookmyshow.utils import serialize_model_to_json
 
 def get_poster_base_url():
   config_url = f"https://api.themoviedb.org/3/configuration?api_key={Config.TMDB_API_KEY}"
@@ -58,11 +59,6 @@ def save_movie_poster(poster_path):
   poster = requests.get(poster_url)
   open(os.path.abspath("bookmyshow/static/img/posters") +
        poster_path, "wb").write(poster.content)
-
-def serialize_to_json(model):
-  cols = model.__class__.__mapper__.c.keys()
-  model_dict = dict((col, getattr(model, col)) for col in cols )
-  return json.dumps(model_dict)
   
 
 def screen_new_movie(movie_data, screening_time):
@@ -74,7 +70,7 @@ def screen_new_movie(movie_data, screening_time):
   new_movie.screenings = [new_movie_screening]
   db.session.add(new_movie)
   db.session.commit()
-  movie_json = serialize_to_json(new_movie)
+  movie_json = serialize_model_to_json(new_movie)
   es.index(index="movies", body=movie_json, id=new_movie.id)
 
 def is_movie_screened_by_current_theatre(existing_movie):
