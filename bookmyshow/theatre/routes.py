@@ -68,7 +68,9 @@ def screen_movie(movie_id):
 # Delete a movie
 @theatre.route("/theatre/movies/<int:movie_id>/delete", methods=["GET"])
 def delete_movie(movie_id):
-  delete_screened_movie(movie_id)
+  res = delete_screened_movie(movie_id)
+  if res == None:
+    return render_template("errors/404.html"), 404
   return redirect(url_for('theatre.movies'))
 
 @theatre.route("/theatre/login", methods=["GET", "POST"])

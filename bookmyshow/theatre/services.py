@@ -1,9 +1,11 @@
 import requests, os
 from flask import session, json
-from bookmyshow import db, es
+from bookmyshow import db
 from bookmyshow.config import Config
 from bookmyshow.models import MovieScreening, Movie
 from bookmyshow.utils import serialize_model_to_json
+if (os.environ.get("FLASK_ENV") == "development"):
+  from bookmyshow import es
 
 def get_poster_base_url():
   config_url = f"https://api.themoviedb.org/3/configuration?api_key={Config.TMDB_API_KEY}"
@@ -71,7 +73,8 @@ def screen_new_movie(movie_data, screening_time):
   db.session.add(new_movie)
   db.session.commit()
   movie_json = serialize_model_to_json(new_movie)
-  es.index(index="movies", body=movie_json, id=new_movie.id)
+  if (os.environ.get("FLASK_ENV") == "development"):
+    es.index(index="movies", body=movie_json, id=new_movie.id)
 
 def is_movie_screened_by_current_theatre(existing_movie):
   existing_movie_screening = existing_movie.screenings
@@ -89,11 +92,14 @@ def screen_existing_movie(existing_movie, screening_time):
 
 def delete_screened_movie(movie_id):
   movie = Movie.query.get(movie_id)
+  if (movie == None):
+    return None
   if (len(movie.screenings) == 1):
     movie_screening = MovieScreening.query.filter_by(movie_id=movie_id, theatre_id=session["user_id"]).first()
     db.session.delete(movie_screening)
     db.session.delete(movie)
-    es.delete(index="movies", id=movie_id)
+    if (os.environ.get("FLASK_ENV") == "development"):
+      es.delete(index="movies", id=movie_id)
   else:
     movie_screening = MovieScreening.query.filter_by(movie_id=movie_id, theatre_id=session["user_id"]).first()
     db.session.delete(movie_screening)

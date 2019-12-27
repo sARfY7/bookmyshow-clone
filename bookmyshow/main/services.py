@@ -1,6 +1,9 @@
 from bookmyshow.models import Movie, Booking, Theatre, Seat
 from flask import json, session
-from bookmyshow import db, es
+from bookmyshow import db
+import os
+if (os.environ.get("FLASK_ENV") == "development"):
+  from bookmyshow import es
 
 def get_in_theatre_movies(offset):
   total_movies = Movie.query.count()
@@ -11,6 +14,8 @@ def get_in_theatre_movies(offset):
 
 def get_movie_screenings(movie_id):
   movie = Movie.query.get(movie_id)
+  if (movie == None):
+    return (None, None)
   movie_screenings = movie.screenings
   theatres = []
   for movie_screening in movie_screenings:
@@ -20,6 +25,8 @@ def get_movie_screenings(movie_id):
 
 def get_unavailable_seats(movie_id, theatre_id):
   movie = Movie.query.get(movie_id)
+  if (movie == None):
+    return (None, None, None)
   theatre = Theatre.query.get(theatre_id)
   bookings = Booking.query.filter_by(
       movie_id=movie_id, theatre_id=theatre_id).all()
@@ -32,6 +39,8 @@ def get_unavailable_seats(movie_id, theatre_id):
 
 def get_booking_summary(movie_id, theatre_id, seats):
   movie = Movie.query.get(movie_id)
+  if (movie == None):
+    return (None, None, None)
   theatre = Theatre.query.get(theatre_id)
   selected_seats = json.loads(seats)
   total_amount = theatre.seat_price * len(selected_seats)
@@ -39,6 +48,8 @@ def get_booking_summary(movie_id, theatre_id, seats):
 
 def get_booking_confirmation(movie_id, theatre_id, seats, amount):
   movie = Movie.query.get(movie_id)
+  if (movie == None):
+    return (None, None, None)
   theatre = Theatre.query.get(theatre_id)
   seats = json.loads(seats)
   total_amount = amount
@@ -52,10 +63,11 @@ def get_booking_confirmation(movie_id, theatre_id, seats, amount):
   return (movie, theatre, new_booking, new_booking.seats)
 
 def get_search_query_result(query):
-  qdsl = json.dumps({"query": {"match": {"title": query}}})
-  result = es.search(index="movies", body=qdsl)
-  searched_movies = []
-  if len(result["hits"]["hits"]) != 0:
-    for hit in result["hits"]["hits"]:
-      searched_movies.append(hit["_source"])
-  return searched_movies
+  if (os.environ.get("FLASK_ENV") == "development"):
+    qdsl = json.dumps({"query": {"match": {"title": query}}})
+    result = es.search(index="movies", body=qdsl)
+    searched_movies = []
+    if len(result["hits"]["hits"]) != 0:
+      for hit in result["hits"]["hits"]:
+        searched_movies.append(hit["_source"])
+    return searched_movies
