@@ -54,7 +54,10 @@ function checkTaskStatus(taskCompletionUrl) {
         downloadUserData();
         clearInterval(timerId);
       }
-    });
+    })
+    .fail(function () {
+      clearInterval(timerId);
+    })
   }, 1000)
 }
 
