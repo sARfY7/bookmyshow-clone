@@ -38,3 +38,27 @@ $('#search-inp').on("input", function(event) {
     autocompleteResultsElement.html(data);
   })
 })
+
+$("#download__btn").click(function() {
+  const endpointUrl = "/user/data";
+  $.post(endpointUrl, function(data) {
+    checkTaskStatus(data.location)
+  })
+})
+
+function checkTaskStatus(taskCompletionUrl) {
+  timerId = setInterval(function() {
+    $.get(taskCompletionUrl, function(data) {
+      parsedData = JSON.parse(data)
+      if (parsedData.status == 'SUCCESS') {
+        downloadUserData();
+        clearInterval(timerId);
+      }
+    });
+  }, 1000)
+}
+
+function downloadUserData() {
+  const endpointUrl = "/user/data/download"
+  window.location = endpointUrl;
+}
