@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Creating Tables"
-python3 create_db.py
-echo "Tables created"
+python3 init_db.py
 
 gunicorn -b "0.0.0.0:8000" app:app
