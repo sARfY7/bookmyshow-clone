@@ -11,6 +11,23 @@ services:
     ports:
       - 5432
 
+  redis:
+    image: "redis:5-alpine"
+    container_name: redis
+    restart: always
+    ports: 
+      - 6379
+
+  celery:
+    build:
+      context: ./app
+    container_name: celery
+    restart: always
+    env_file: ./app/.env
+    depends_on: 
+      - redis
+    command: ["celery", "worker", "-A", "bookmyshow.celery.celery", "--loglevel=info"]
+
   flask:
     build: ./app
     container_name: flask
