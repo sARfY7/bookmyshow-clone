@@ -92,8 +92,6 @@ def screen_existing_movie(existing_movie, screening_time):
 
 def delete_screened_movie(movie_id):
   movie = Movie.query.get(movie_id)
-  if (movie == None):
-    return None
   if (len(movie.screenings) == 1):
     movie_screening = MovieScreening.query.filter_by(movie_id=movie_id, theatre_id=session["user_id"]).first()
     db.session.delete(movie_screening)
