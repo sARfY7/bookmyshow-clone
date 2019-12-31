@@ -2,7 +2,6 @@ from bookmyshow.config import Config
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from celery import Celery
 import os
 if (os.environ.get("FLASK_ENV") == "development"):
     from elasticsearch import Elasticsearch
@@ -14,11 +13,6 @@ db = SQLAlchemy(app) # Creating a new Flask-SQLAlchemy instance by passing in Fl
 bcrypt = Bcrypt(app) # Creating a new Flask-Bcrypt instance by passing in Flask App Instance
 if (os.environ.get("FLASK_ENV") == "development"):
     es = Elasticsearch() # Creating Elasticsearch intance for searching
-celery = Celery(app.name, broker="redis://localhost:6379/0")
-celery.conf.update(
-    task_track_started=True,
-    result_backend="redis://localhost:6379/0"
-)
 
 # Models Import
 import bookmyshow.models
